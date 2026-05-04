@@ -1,12 +1,7 @@
-import { useState } from 'react';
 import React from 'react'
 import { useActivities } from '../myContext';
+import { useActivityInput } from '../hooks/useInputFunc'
 import Add from './../assets/add.svg'
-
-interface tabsProps {
-    id: number,
-    title: string,
-}
 
 const InsertionForm = () => {
 
@@ -14,8 +9,9 @@ const InsertionForm = () => {
         inputVal,
         addEntry,
         setInputVal,
-        handleInputChange,
     } = useActivities()
+
+    const { value, onChange } = useActivityInput()
 
     const handleSubmit = (e: React.SubmitEvent) => {
         e.preventDefault();
@@ -37,8 +33,8 @@ const InsertionForm = () => {
                 <input
                     type="text"
                     placeholder="digite sua atividade aqui"
-                    value={inputVal}
-                    onChange={handleInputChange}
+                    value={value}
+                    onChange={onChange}
                     className='w-full focus:outline-none' />
                 <button
                     type='submit'

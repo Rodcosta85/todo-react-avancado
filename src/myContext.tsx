@@ -11,14 +11,15 @@ interface MyContextType {
     showAll: boolean,
     showPending: boolean,
     showFinished: boolean,
+    isBeingHovered: string | number | null,
+    setIsBeingHovered: (id: string | number | null) => void,
     setShowAll: (e: boolean) => void,
     setShowPending: (e: boolean) => void,
     setShowFinished: (e: boolean) => void,
     setActiveTab: (index: number) => void
     setInputVal: (e: string) => void,
     addEntry: (newEntry: activityTypes) => void,
-    removeEntry: (id: number) => void,
-    handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
+    updateEntry: (id: number) => void,
     resetData: () => void,
 }
 
@@ -43,6 +44,7 @@ export const MyContextStates = ({ children }: { children: ReactNode }) => {
     const [showAll, setShowAll] = useState<boolean>(true);
     const [showPending, setShowPending] = useState<boolean>(false);
     const [showFinished, setShowFinished] = useState<boolean>(false);
+    const [isBeingHovered, setIsBeingHovered] = useState<string | number | null>(null)
 
     useEffect(() => {
         localStorage.setItem("my_activities", JSON.stringify(allActivities));
@@ -56,19 +58,23 @@ export const MyContextStates = ({ children }: { children: ReactNode }) => {
         localStorage.setItem("deleted_count", deletedCount.toString());
     }, [deletedCount]);
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setInputVal(e.target.value);
-    };
-
     const addEntry = (newEntry: activityTypes) => {
-        // 2. This updates the SAME list that the UI is mapping over
         setAllActivities((prev) => [...prev, newEntry]);
     };
 
-    const removeEntry = (id: number) => {
-        const activity = allActivities.find(act => act.id === id);
-        setFinishedActivities(prev => [...prev, activity!]);
-        setAllActivities((prev) => prev.filter(act => act.id !== id));
+    const updateEntry = (id: number) => {
+        setAllActivities((prev) =>
+            prev.map(activity => {
+                if (activity.id === id) {
+                    // Se for o ID que clicamos, retorna uma cópia com isCompleted true
+                    return { ...activity, isCompleted: true };
+                }
+                // Se não for o ID clicado, retorna a atividade sem mexer nela
+                return activity;
+            })
+        );
+
+        // Atualiza o contador (se o exercício pedir para contar apenas novas conclusões)
         setDeletedCount((prev) => prev + 1);
     };
 
@@ -88,11 +94,12 @@ export const MyContextStates = ({ children }: { children: ReactNode }) => {
             showAll,
             showPending,
             showFinished,
+            isBeingHovered,
+            setIsBeingHovered,
             setInputVal,
             addEntry,
             setActiveTab,
-            removeEntry,
-            handleInputChange,
+            updateEntry,
             resetData,
             setShowAll,
             setShowPending,

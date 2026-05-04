@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useActivities } from './../myContext';
-import Check from './../assets/check.svg'
+import ListItem from './ListItem';
 
 interface tabsProps {
     id: number,
@@ -8,13 +8,13 @@ interface tabsProps {
 }
 
 const List = () => {
-    const [isBeingHovered, setIsBeingHovered] = useState<string | number | null>(null)
     const {
         allActivities,
-        finishedActivities,
         activeTab,
+        isBeingHovered,  
+        setIsBeingHovered,
         setActiveTab,
-        removeEntry,
+        updateEntry,
     } = useActivities()
 
     const [tabsInfo] = useState<tabsProps[]>([
@@ -43,7 +43,7 @@ const List = () => {
                                     cursor-pointer rounded-md 
                                     w-full pl-2 pr-2 
                                     ${activeTab === item.id ?
-                                    'bg-orange-400 font-semibold text-white' : 'text-gray-400'}`}
+                                'bg-orange-400 font-semibold text-white' : 'text-gray-400'}`}
                         onClick={() => setActiveTab(item.id)}>
                         {item.title}
                     </button>
@@ -51,47 +51,21 @@ const List = () => {
             </div>
 
             <div className='flex flex-col gap-2'>
-                {(activeTab === 1 || activeTab === 2) &&
-                    allActivities.map((item) => {
-                        const isHovered = isBeingHovered === item.id
-
-                        return (
-                            <button
-                                key={item.id}
-                                onClick={() => removeEntry(item.id)}
-                                onMouseEnter={() => setIsBeingHovered(item.id)}
-                                onMouseLeave={() => setIsBeingHovered(null)}
-                                className='flex justify-between items-center 
-                                        bg-gray-500 p-2.5 rounded-md
-                                        cursor-pointer
-                                        relative'>
-                                <h4>{item.title}</h4>
-                                <div
-                                    className={`absolute right-0 top-0
-                                            flex justify-center items-center
-                                            ${isHovered ? 'w-10 opacity-100' : 'w-0 opacity-0'} h-full 
-                                            bg-green-700
-                                            rounded-tr-sm rounded-br-sm
-                                            cursor-pointer 
-                                            transition-all duration-300 ease-in-out`}>
-                                    <img src={Check} alt="A check symbol" />
-                                </div>
-                            </button>
-                        )
+                {allActivities
+                    .filter((item) => {
+                        if (activeTab === 1) return true; // Mostra tudo
+                        if (activeTab === 2) return !item.isCompleted; // Só pendentes
+                        if (activeTab === 3) return item.isCompleted; // Só concluídos
+                        return true;
                     })
+                    .map((item) => 
+                    <ListItem 
+                        item={item}
+                        isBeingHovered={isBeingHovered === item.id ? item.id : null}
+                        setIsBeingHovered={setIsBeingHovered}
+                        updateEntry={updateEntry} 
+                    />)  
                 }
-
-                {(activeTab === 1 || activeTab === 3) && finishedActivities.map(item => {
-                    return (
-                        <button
-                            key={item.id}
-                            className='text-center
-                        bg-green-700 p-2.5 rounded-md relative'>
-                            <h4>{item.title}</h4>
-                        </button>
-                    )
-
-                })}
             </div>
 
         </div>

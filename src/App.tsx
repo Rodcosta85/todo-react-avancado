@@ -17,7 +17,7 @@ function App() {
 
   return (
     <div className='flex flex-col justify-start items-center gap-12.5
-    w-full h-full md:h-screen lg:h-screen pb-10
+    w-full h-screen pb-10
     bg-slate-900 text-white'>
       <Header />
       <div className='flex justify-center
