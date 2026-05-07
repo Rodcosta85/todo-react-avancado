@@ -1,7 +1,7 @@
 import { useActivities } from './myContext';
 import Header from './components/layout/Header';
 import List from './components/List';
-import FormFilters from './components/FormFilters';
+import FormComp from './components/FormComp';
 import ProgressBar from './components/ProgressBar';
 
 function App() {
@@ -35,7 +35,7 @@ function App() {
       w-276'>
           <div className='flex flex-col gap-10 md:w-[50%] lg:w-[50%]'>
             <ProgressBar roundNumber={roundNumber} />
-            <FormFilters />
+            <FormComp />
           </div>
           <List />
         </div>

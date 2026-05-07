@@ -27,7 +27,6 @@ const ListItem: React.FC<ListItemProps> = React.memo(({
     return (
         <div className='flex items-center w-full h-10 rounded-tl-md rounded-bl-md overflow-hidden'>
             <div
-                key={item.id}
                 onMouseEnter={() => setIsBeingHovered(item.id)}
                 onMouseLeave={() => setIsBeingHovered(null)}
                 className={`relative 
@@ -40,6 +39,8 @@ const ListItem: React.FC<ListItemProps> = React.memo(({
                 {/* Só mostra o check e o efeito de hover se NÃO estiver concluído */}
                 {!item.isCompleted && (
                     <button
+                        title="Concluir tarefa"
+                        aria-label="Concluir tarefa"
                         onClick={() => concludeEntry(item.id)}
                         className={`absolute right-0 top-0 flex justify-center items-center
                             ${isHovered ? 'w-10 opacity-100' : 'w-0 opacity-0'} 
@@ -54,6 +55,8 @@ const ListItem: React.FC<ListItemProps> = React.memo(({
                 {/* Só mostra o check e o efeito de hover se estiver concluído */}
                 {item.isCompleted && (
                     <button
+                        title="Marcar como pendente"
+                        aria-label="Marcar como pendente"
                         onClick={() => resetEntry(item.id)}
                         className={`absolute right-0 top-0 flex justify-center items-center
                             ${isHovered ? 'w-10 opacity-100' : 'w-0 opacity-0'} 
@@ -67,6 +70,8 @@ const ListItem: React.FC<ListItemProps> = React.memo(({
             </div>
             {/* botão de deletar a tarefa de forma total */}
             <button
+                title="Excluir tarefa"
+                aria-label="Excluir tarefa"
                 onClick={() => deleteEntry(item.id)}
                 className={`flex justify-center items-center 
                 w-10 h-full 

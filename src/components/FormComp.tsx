@@ -37,13 +37,15 @@ const InsertionForm = () => {
                     onChange={onChange}
                     className='w-full focus:outline-none' />
                 <button
+                    title="Adicionar tarefa"
+                    aria-label="Adicionar tarefa"
                     type='submit'
                     className='flex justify-center items-center 
-            w-fit h-fit p-2
-            bg-orange-400
-            rounded-md
-            text-[12px]
-            cursor-pointer'>
+                    w-fit h-fit p-2
+                    bg-orange-400
+                    rounded-md
+                    text-[12px]
+                    cursor-pointer'>
                     <img src={Add} alt="" />
                 </button>
             </form>

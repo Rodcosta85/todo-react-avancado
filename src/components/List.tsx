@@ -62,6 +62,7 @@ const List = () => {
                     })
                     .map((item) => 
                     <ListItem 
+                        key={item.id}
                         item={item}
                         isBeingHovered={isBeingHovered === item.id ? item.id : null}
                         setIsBeingHovered={setIsBeingHovered}
