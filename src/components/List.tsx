@@ -14,7 +14,9 @@ const List = () => {
         isBeingHovered,  
         setIsBeingHovered,
         setActiveTab,
-        updateEntry,
+        concludeEntry,
+        resetEntry,
+        deleteEntry
     } = useActivities()
 
     const [tabsInfo] = useState<tabsProps[]>([
@@ -63,7 +65,9 @@ const List = () => {
                         item={item}
                         isBeingHovered={isBeingHovered === item.id ? item.id : null}
                         setIsBeingHovered={setIsBeingHovered}
-                        updateEntry={updateEntry} 
+                        concludeEntry={concludeEntry} 
+                        resetEntry={resetEntry}
+                        deleteEntry={deleteEntry}
                     />)  
                 }
             </div>

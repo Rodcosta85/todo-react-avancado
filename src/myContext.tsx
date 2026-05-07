@@ -6,7 +6,6 @@ interface MyContextType {
     allActivities: activityTypes[],
     finishedActivities: activityTypes[],
     activeTab: number,
-    deletedCount: number,
     inputVal: string,
     showAll: boolean,
     showPending: boolean,
@@ -19,8 +18,10 @@ interface MyContextType {
     setActiveTab: (index: number) => void
     setInputVal: (e: string) => void,
     addEntry: (newEntry: activityTypes) => void,
-    updateEntry: (id: number) => void,
-    resetData: () => void,
+    concludeEntry: (id: number) => void,
+    resetEntry: (id: number) => void,
+    deleteEntry: (id: number) => void,
+    resetApp: () => void
 }
 
 export const MyDataContext = createContext<MyContextType | undefined>(undefined);
@@ -36,11 +37,6 @@ export const MyContextStates = ({ children }: { children: ReactNode }) => {
     });
     const [inputVal, setInputVal] = useState<string>("");
     const [activeTab, setActiveTab] = useState<number>(1);
-    const [deletedCount, setDeletedCount] = useState<number>(() => {
-        const savedCount = localStorage.getItem("deleted_count");
-        return savedCount ? parseInt(savedCount) : 0;
-    });
-
     const [showAll, setShowAll] = useState<boolean>(true);
     const [showPending, setShowPending] = useState<boolean>(false);
     const [showFinished, setShowFinished] = useState<boolean>(false);
@@ -54,40 +50,46 @@ export const MyContextStates = ({ children }: { children: ReactNode }) => {
         localStorage.setItem("finished_activities", JSON.stringify(finishedActivities));
     }, [finishedActivities]);
 
-    useEffect(() => {
-        localStorage.setItem("deleted_count", deletedCount.toString());
-    }, [deletedCount]);
-
     const addEntry = (newEntry: activityTypes) => {
         setAllActivities((prev) => [...prev, newEntry]);
     };
 
-    const updateEntry = (id: number) => {
+    const concludeEntry = (id: number) => {
         setAllActivities((prev) =>
             prev.map(activity => {
                 if (activity.id === id) {
-                    // Se for o ID que clicamos, retorna uma cópia com isCompleted true
                     return { ...activity, isCompleted: true };
                 }
-                // Se não for o ID clicado, retorna a atividade sem mexer nela
                 return activity;
             })
         );
-
-        // Atualiza o contador (se o exercício pedir para contar apenas novas conclusões)
-        setDeletedCount((prev) => prev + 1);
     };
 
-    const resetData = () => {
+    const resetEntry = (id: number) => {
+        setAllActivities((prev) =>
+            prev.map(activity => {
+                if (activity.id === id) {
+                    return { ...activity, isCompleted: false };
+                }
+                return activity;
+            })
+        );
+    }
+
+    const deleteEntry = (id: number) => {
+        const filteredItem = allActivities.find(item => item.id === id);
+        if (!filteredItem) return;
+        const remaningList = allActivities.filter(item => item.id !== id);
+        setAllActivities(remaningList);
+    }
+
+    const resetApp = () => {
         setAllActivities([])
-        setFinishedActivities([])
-        setDeletedCount(0)
     }
 
     return (
         <MyDataContext.Provider value={{
             allActivities,
-            deletedCount,
             activeTab,
             inputVal: inputVal,
             finishedActivities,
@@ -99,11 +101,13 @@ export const MyContextStates = ({ children }: { children: ReactNode }) => {
             setInputVal,
             addEntry,
             setActiveTab,
-            updateEntry,
-            resetData,
+            concludeEntry,
+            resetEntry,
+            deleteEntry,
             setShowAll,
             setShowPending,
             setShowFinished,
+            resetApp
         }}>
             {children}
         </MyDataContext.Provider>
